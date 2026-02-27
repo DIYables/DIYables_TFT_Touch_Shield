@@ -7,7 +7,27 @@ It enables fast and reliable graphics, text, and image rendering on your TFT shi
 
 With this library, you can easily create colorful, high-resolution graphical interfaces for your Arduino projects using the DIYables TFT LCD Display Shield.
 
-![DIYables TFT LCD Touch Display](https://diyables.io/images/products/tft-touch-display-6.jpg)
+![DIYables TFT LCD Touch Display](https://newbiely.com/images/tutorial/tft-touch-screen-lcd-display-pinout.jpg)
+
+
+
+Shield Version & Library Version
+----------------------------
+The DIYables TFT LCD Touch Display Shield has two hardware versions:
+
+| Feature                | Older Version              | New Version                     |
+|------------------------|----------------------------|---------------------------------|
+| Driver IC              | ILI9488                    | RM68140                         |
+| Resolution             | 320 × 480                  | 320 × 480                       |
+| Touch Screen           | Resistive                  | Resistive                       |
+| Interface              | 8-bit Parallel             | 8-bit Parallel                  |
+| Screen Rotation        | ⚠️ Mirrored on some rotations | ✅ All rotations correct       |
+| Drawing Speed          | Slow (pixel-by-pixel)      | ⚡ Hardware-accelerated          |
+| Arduino Library        | v1.0.0                     | v2.0.0+                         |
+
+* If you have the **older version (ILI9488)**, use library version **1.0.0**.
+* If you have the **new version (RM68140)**, update to library version **2.0.0** or later via the Arduino Library Manager.
+* Both versions use the same code structure and examples.
 
 
 
@@ -34,6 +54,7 @@ Available Examples
 * **TouchGetPoint.ino**: Shows how to read and display the raw and mapped touch coordinates from the touch panel.
 * **TouchButton.ino**: Demonstrates how to create a touchable button and detect press/release events on the TFT touch screen.  
 * **TouchDraw.ino**: Lets you draw freehand lines on the screen by dragging your finger or stylus across the touch panel.  
+* **TurnOnOff.ino**: Demonstrates how to turn the TFT display on and off using the `turnOn()` and `turnOff()` functions.  
 
 
 
@@ -43,6 +64,7 @@ Tutorials
 ----------------------------
 * [Arduino - TFT LCD Touch Screen Display](https://arduinogetstarted.com/tutorials/arduino-tft-lcd-touch-screen-display)
 * [Arduino UNO R4 - TFT LCD Touch Screen Display](https://newbiely.com/tutorials/arduino-uno-r4/arduino-uno-r4-tft-lcd-touch-screen-display)
+* [Arduino Mega - TFT LCD Touch Screen Display](https://newbiely.com/tutorials/arduino-mega/arduino-mega-tft-lcd-touch-screen-display)
 
 
 
@@ -66,5 +88,5 @@ Tested Hardware
 
 
 
-**Note**: This library is designed for the [DIYables 3.5 Inch ILI9488 TFT LCD Display Screen Shield (with touch)](https://www.amazon.com/dp/B0DQ3NQ3LW). If you're using the [DIYables 3.5 Inch ILI9486 TFT LCD Display Screen Shield (non-touch)](https://www.amazon.com/dp/B0DLMV7NTK), please use the [DIYables TFT Shield Library](https://github.com/DIYables/DIYables_TFT_Shield) instead.
+**Note**: This library is designed for the [DIYables 3.5 Inch TFT LCD Touch Display Shield](https://www.amazon.com/dp/B0DQ3NQ3LW) (with touch). It supports both the older ILI9488 version (library v1.0.0) and the new RM68140 version (library v2.0.0+). If you're using the [DIYables 3.5 Inch ILI9486 TFT LCD Display Screen Shield (non-touch)](https://www.amazon.com/dp/B0DLMV7NTK), please use the [DIYables TFT Shield Library](https://github.com/DIYables/DIYables_TFT_Shield) instead.
 

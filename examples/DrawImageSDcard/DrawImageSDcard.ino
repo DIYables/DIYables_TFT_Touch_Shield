@@ -15,7 +15,7 @@
 
 #define BUFFPIXEL 20  // Buffer size remains the same
 
-DIYables_TFT_ILI9488_Shield TFT_display;
+DIYables_TFT_RM68140_Shield TFT_display;
 #define SD_CS 10
 
 File bmpFile;
@@ -161,7 +161,6 @@ void drawBMP(const char *filename, int x, int y) {
   bmpFile.seek(imageOffset);
 
   uint8_t sdbuffer[3 * BUFFPIXEL];  // Buffer for 20 pixels (3 bytes per pixel)
-  uint16_t color;
   uint32_t rowSize = (bmpWidth * 3 + 3) & ~3;  // BMP rows are padded to 4-byte boundaries
 
   // Adjust x and y if image is larger than screen
@@ -173,12 +172,17 @@ void drawBMP(const char *filename, int x, int y) {
   uint32_t maxRow = min(bmpHeight, SCREEN_HEIGHT - y);
   uint32_t maxCol = min(bmpWidth, SCREEN_WIDTH - x);
 
-  // Draw the image
+  // Draw the image row by row using hardware-accelerated streaming
+  uint16_t colorbuf[BUFFPIXEL];  // Color buffer for pushColors
+
   for (uint32_t row = 0; row < maxRow; row++) {
     int32_t rowPos = topDown ? row : bmpHeight - 1 - row;  // Adjust for top-down BMPs
 
     uint32_t filePosition = imageOffset + rowPos * rowSize;
     bmpFile.seek(filePosition);  // Move to the correct row
+
+    // Set address window for this row
+    TFT_display.setAddrWindow(x, y + row, x + maxCol - 1, y + row);
 
     for (uint32_t col = 0; col < maxCol; col += BUFFPIXEL) {
       uint32_t pixelsToRead = min(BUFFPIXEL, maxCol - col);  // Avoid reading beyond row width
@@ -188,13 +192,11 @@ void drawBMP(const char *filename, int x, int y) {
         uint8_t b = sdbuffer[i * 3];
         uint8_t g = sdbuffer[i * 3 + 1];
         uint8_t r = sdbuffer[i * 3 + 2];
-        color = DIYables_TFT::colorRGB(r, g, b);
-
-        // Draw pixel on screen if within bounds
-        if ((x + col + i) < SCREEN_WIDTH && (y + row) < SCREEN_HEIGHT) {
-          TFT_display.drawPixel(x + col + i, y + row, color);
-        }
+        colorbuf[i] = DIYables_TFT::colorRGB(r, g, b);
       }
+
+      // Stream the buffer of pixels to the display
+      TFT_display.pushColors(colorbuf, pixelsToRead);
     }
   }
 
@@ -230,3 +232,4 @@ bool getBMPDimensions(const char *filename, uint32_t &width, uint32_t &height) {
   bmpFile.close();  // Close the file
   return true;      // Success
 }
+

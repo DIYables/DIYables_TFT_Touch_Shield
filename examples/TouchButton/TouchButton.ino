@@ -4,6 +4,9 @@
   This example shows how to detect press and release events on a rectangular button
   using the DIYables TFT Touch Shield. When you touch inside the button, it changes color
   and displays "PRESSED". When you release, it returns to its original state.
+
+  The touch screen works with default calibration values.
+  Just in case the touch does not work properly, run the TouchCalibration example.
   
   Provided by DIYables
 
@@ -16,18 +19,19 @@
 
 #include <DIYables_TFT_Touch_Shield.h>
 
-DIYables_TFT_ILI9488_Shield TFT_display;
+DIYables_TFT_RM68140_Shield TFT_display;
 
 #define BLACK DIYables_TFT::colorRGB(0, 0, 0)
 #define WHITE DIYables_TFT::colorRGB(255, 255, 255)
 #define GRAY DIYables_TFT::colorRGB(128, 128, 128)
 #define RED DIYables_TFT::colorRGB(255, 0, 0)
 
-// Set your calibration values here!
-#define MIN_X 121
-#define MAX_X 913
-#define MIN_Y 78
-#define MAX_Y 931
+// (Optional) Calibration values. Just in case touch does not work properly,
+// run the TouchCalibration example and update the values below.
+#define LEFT_X 136
+#define RIGHT_X 907
+#define TOP_Y 942
+#define BOT_Y 139
 
 #define BUTTON_X      70
 #define BUTTON_Y      100
@@ -37,9 +41,10 @@ DIYables_TFT_ILI9488_Shield TFT_display;
 bool lastPressed = false;
 
 void setup() {
+    Serial.begin(9600);
     TFT_display.begin();
     TFT_display.setRotation(0);
-    TFT_display.setTouchCalibration(MIN_X, MAX_X, MIN_Y, MAX_Y);
+    TFT_display.setTouchCalibration(LEFT_X, RIGHT_X, TOP_Y, BOT_Y);
     TFT_display.fillScreen(WHITE); // White background
 
     // Draw button
@@ -60,9 +65,15 @@ void loop() {
         }
     }
 
+    if(lastPressed == pressed) {
+        // No change in state, do nothing
+        return;
+    }
+
     // Detect press event
     if (pressed && !lastPressed) {
         // Just pressed
+        Serial.println("Button PRESSED");
         TFT_display.drawRect(BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, BLACK);
         TFT_display.fillRect(BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, GRAY);
         TFT_display.setTextColor(BLACK);
@@ -73,6 +84,7 @@ void loop() {
     // Detect release event
     if (!pressed && lastPressed) {
         // Just released
+        Serial.println("Button RELEASED");
         TFT_display.drawRect(BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, BLACK);
         TFT_display.fillRect(BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, RED);
         TFT_display.setTextColor(WHITE);

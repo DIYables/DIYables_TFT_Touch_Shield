@@ -14,7 +14,7 @@
 #define MAGENTA   DIYables_TFT::colorRGB(255, 0, 255)
 #define WHITE     DIYables_TFT::colorRGB(255, 255, 255)
 
-DIYables_TFT_ILI9488_Shield TFT_display;
+DIYables_TFT_RM68140_Shield TFT_display;
 
 
 void setup() {
@@ -24,7 +24,7 @@ void setup() {
   TFT_display.setFont(&FreeSansBold12pt7b);
 
   // Set the rotation (0 to 3)
-  TFT_display.setRotation(1);  // Rotate screen 90 degrees
+  TFT_display.setRotation(0);  // Rotate screen 90 degrees
   TFT_display.fillScreen(WHITE);
 
   // Set text color and size
@@ -51,3 +51,4 @@ void setup() {
 
 void loop(void) {
 }
+

@@ -6,10 +6,10 @@
    When you touch the screen, the code prints the mapped (screen) X and Y coordinates to the Serial Monitor
    and draws a red dot at the touched location.
 
-   **Important:**  
-   You must calibrate your touch screen and set the correct calibration values in the code (`MIN_X`, `MAX_X`, `MIN_Y`, `MAX_Y`)
-   for accurate touch detection.  
-   Run the `TouchCalibration` example first if you have not calibrated your screen.
+   **Note:**  
+   The touch screen works with default calibration values.
+   Just in case the touch does not work properly, run the `TouchCalibration` example
+   and set the calibration values in the code using `setTouchCalibration()`.
 
    Provided by DIYables
 
@@ -25,13 +25,14 @@
 #define RED DIYables_TFT::colorRGB(255, 0, 0)
 #define WHITE DIYables_TFT::colorRGB(255, 255, 255)
 
-// Set your calibration values here!
-#define MIN_X 121
-#define MAX_X 913
-#define MIN_Y 78
-#define MAX_Y 931
+// (Optional) Calibration values. Just in case touch does not work properly,
+// run the TouchCalibration example and update the values below.
+#define LEFT_X 136
+#define RIGHT_X 907
+#define TOP_Y 942
+#define BOT_Y 139
 
-DIYables_TFT_ILI9488_Shield TFT_display;
+DIYables_TFT_RM68140_Shield TFT_display;
 
 void setup() {
   Serial.begin(9600);
@@ -41,7 +42,7 @@ void setup() {
 
   TFT_display.fillScreen(WHITE);
 
-  TFT_display.setTouchCalibration(MIN_X, MAX_X, MIN_Y, MAX_Y);
+  TFT_display.setTouchCalibration(LEFT_X, RIGHT_X, TOP_Y, BOT_Y);
   Serial.println("Touch the screen to see coordinates.");
 }
 

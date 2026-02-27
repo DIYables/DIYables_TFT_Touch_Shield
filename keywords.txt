@@ -8,6 +8,7 @@
 
 DIYables_TFT_Touch_Shield	KEYWORD1
 DIYables_TFT_ILI9488_Shield	KEYWORD1
+DIYables_TFT_RM68140_Shield	KEYWORD1
 TFT_display	KEYWORD1
 
 
@@ -18,6 +19,8 @@ getDisplayWidth	KEYWORD2
 getDisplayHeight	KEYWORD2
 getCharWidth	KEYWORD2
 getTextWidth	KEYWORD2
+turnOn	KEYWORD2
+turnOff	KEYWORD2
 
 
 

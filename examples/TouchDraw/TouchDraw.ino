@@ -7,7 +7,8 @@
   - Lift the pen to stop drawing.
   - Touch again to start a new line from the last point.
 
-  Make sure you have calibrated your touch screen and set the calibration values!
+  The touch screen works with default calibration values.
+  Just in case the touch does not work properly, run the TouchCalibration example.
   
   Provided by DIYables
 
@@ -23,34 +24,28 @@
 #define RED DIYables_TFT::colorRGB(255, 0, 0)
 #define WHITE DIYables_TFT::colorRGB(255, 255, 255)
 
-// Set your calibration values here!
-#define MIN_X 121
-#define MAX_X 913
-#define MIN_Y 78
-#define MAX_Y 931
+// (Optional) Calibration values. Just in case touch does not work properly,
+// run the TouchCalibration example and update the values below.
+#define LEFT_X 136
+#define RIGHT_X 907
+#define TOP_Y 942
+#define BOT_Y 139
 
-DIYables_TFT_ILI9488_Shield TFT_display;
+DIYables_TFT_RM68140_Shield TFT_display;
+
+#define PEN_RADIUS 3 // Radius (in pixels) of the circle drawn at each touch point
 
 void setup() {
     TFT_display.begin();
     TFT_display.setRotation(0);
-    TFT_display.setTouchCalibration(MIN_X, MAX_X, MIN_Y, MAX_Y);
+    TFT_display.setTouchCalibration(LEFT_X, RIGHT_X, TOP_Y, BOT_Y);
     TFT_display.fillScreen(WHITE);
 }
 
 void loop() {
-    static int lastX = -1, lastY = -1;
     int x, y;
 
     if (TFT_display.getTouch(x, y)) {
-        if (lastX >= 0 && lastY >= 0) {
-            TFT_display.drawLine(lastX, lastY, x, y, RED);
-        }
-        lastX = x;
-        lastY = y;
-        delay(10); // Smoother drawing
-    } else {
-        lastX = -1;
-        lastY = -1;
+        TFT_display.fillCircle(x, y, PEN_RADIUS, RED);
     }
 }
