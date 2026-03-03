@@ -38,7 +38,11 @@ DIYables_TFT_RM68140_Shield TFT_display;
 #define BUTTON_W      180
 #define BUTTON_H      60
 
+#define DEBOUNCE_DELAY 50  // milliseconds
+
 bool lastPressed = false;
+bool stablePressed = false;
+unsigned long lastDebounceTime = 0;
 
 void setup() {
     Serial.begin(9600);
@@ -65,13 +69,24 @@ void loop() {
         }
     }
 
-    if(lastPressed == pressed) {
-        // No change in state, do nothing
+    // Reset debounce timer whenever the raw reading changes
+    if (pressed != lastPressed) {
+        lastDebounceTime = millis();
+    }
+    lastPressed = pressed;
+
+    // Only update stable state after debounce delay has passed
+    if ((millis() - lastDebounceTime) < DEBOUNCE_DELAY) {
+        return;
+    }
+
+    if (stablePressed == pressed) {
+        // No change in stable state, do nothing
         return;
     }
 
     // Detect press event
-    if (pressed && !lastPressed) {
+    if (pressed && !stablePressed) {
         // Just pressed
         Serial.println("Button PRESSED");
         TFT_display.drawRect(BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, BLACK);
@@ -82,7 +97,7 @@ void loop() {
     }
 
     // Detect release event
-    if (!pressed && lastPressed) {
+    if (!pressed && stablePressed) {
         // Just released
         Serial.println("Button RELEASED");
         TFT_display.drawRect(BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, BLACK);
@@ -92,5 +107,5 @@ void loop() {
         TFT_display.print("PRESS");
     }
 
-    lastPressed = pressed;
+    stablePressed = pressed;
 }
