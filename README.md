@@ -73,17 +73,25 @@ References
 * [DIYables_TFT_Touch_Shield Library Reference](https://arduinogetstarted.com/reference/library/diyables-tft-touch-display-library)
 
 
-Tested Hardware
+Supported and Tested Hardware
 ----------------------------
 
-| Board                   | Tested | Notes                                      |
-|-------------------------|:------:|---------------------------------------------|
-| Arduino Uno R3          |   ✅   | Fully supported                            |
-| Arduino Uno R4 WiFi     |   ✅   | Fully supported       |
-| Arduino Uno R4 Minima   |   ✅   | Fully supported       |
-| Arduino Mega            |   ✅   | Fully supported                            |
-| Arduino Giga            |   ✅   | Fully supported         |
-| [DIYables R3 Mega328P Development Board](https://www.amazon.com/dp/B0DQGBXR1R) |   ✅   | Fully supported          |
+| Board                   | Tested | Mode                      | Speed     |
+|-------------------------|:------:|---------------------------|-----------|
+| Arduino Uno R3          |   ✅   | Direct register access    | Very fast |
+| [DIYables STEM V3 *(works like Arduino Uno R3)*](https://diyables.io/products/diyables-stem-v3-fully-compatible-with-arduino-uno-r3) |   ✅   | Direct register access    | Very fast |
+| Arduino Uno R4 WiFi     |   ✅   | Direct register access    | Very fast |
+| [DIYables STEM V4 IoT *(works like Arduino Uno R4 WiFi)*](https://diyables.io/products/diyables-stem-v4-iot-fully-compatible-with-arduino-uno-r4-wifi) |   ✅   | Direct register access    | Very fast |
+| [DIYables STEM V4B IoT *(works like Arduino Uno R4 WiFi)*](https://diyables.io/products/diyables-stem-v4b-iot-development-board-compatible-with-arduino-uno-r4-wifi-ra4m1-32-bit-arm-cortex-m4-with-esp32-s3-wifi-bluetooth-usb-c-for-learning-prototyping-education) |   ✅   | Direct register access    | Very fast |
+| Arduino Uno R4 Minima   |   ✅   | Direct register access    | Very fast |
+| [DIYables STEM V4 Edu *(works like Arduino Uno R4 Minima)*](https://diyables.io/stem-v4-edu) |   ✅   | Direct register access    | Very fast |
+| Arduino Mega            |   ✅   | Direct register access    | Very fast |
+| [DIYables MEGA2560 R3 *(works like Arduino Mega 2560 Rev3)*](https://diyables.io/atmega2560-board) |   ✅   | Direct register access    | Very fast |
+| Arduino Due             |   —   | Direct register access    | Very fast |
+| Arduino Giga            |   —   | Direct register access    | Very fast |
+| [DIYables ESP32 S3, Uno-form factor](https://diyables.io/products/esp32-s3-development-board-with-esp32-s3-wroom-1-n16r8-wifi-bluetooth-uno-compatible-form-factor-works-with-arduino-ide) |   ✅   | Direct register access    | Very fast |
+| Other boards            |   —    | Arduino API (digitalWrite)| Slower    |
+
 
 
 

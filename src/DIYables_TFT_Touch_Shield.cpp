@@ -2,7 +2,17 @@
 #include <DIYables_TFT_Touch_Shield.h>
 
 DIYables_TFT_RM68140_Shield::DIYables_TFT_RM68140_Shield()
-  : DIYables_TFT_ILI9486_Shield(), _ts(TS_XP, TS_YP, TS_XM, TS_YM, 300) {}
+  : DIYables_TFT_ILI9486_Shield(), _ts(TS_XP, TS_YP, TS_XM, TS_YM, 300),
+    _ts_xp(TS_XP), _ts_yp(TS_YP), _ts_xm(TS_XM), _ts_ym(TS_YM) {}
+
+DIYables_TFT_RM68140_Shield::DIYables_TFT_RM68140_Shield(
+  uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
+  uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
+  uint8_t rd, uint8_t wr, uint8_t cd, uint8_t cs, uint8_t rst,
+  uint8_t ts_xp, uint8_t ts_yp, uint8_t ts_xm, uint8_t ts_ym)
+  : DIYables_TFT_ILI9486_Shield(d0, d1, d2, d3, d4, d5, d6, d7, rd, wr, cd, cs, rst),
+    _ts(ts_xp, ts_yp, ts_xm, ts_ym, 300),
+    _ts_xp(ts_xp), _ts_yp(ts_yp), _ts_xm(ts_xm), _ts_ym(ts_ym) {}
 
 void DIYables_TFT_RM68140_Shield::begin() {
     DIYables_TFT_ILI9486_Shield::begin();
@@ -16,50 +26,50 @@ void DIYables_TFT_RM68140_Shield::begin() {
     // Fix: issue a software reset to clear ALL register state, then re-send
     // only the registers the RM68140 actually needs.
 
-    _writeCmd(0x01);   // Software Reset — clears all registers to defaults
+    writeCommand(0x01);   // Software Reset — clears all registers to defaults
     delay(120);        // Wait for reset to complete
 
-    _writeCmd(0x11);   // Sleep Out
+    writeCommand(0x11);   // Sleep Out
     delay(120);
 
-    _writeCmd(0x3A);   // Interface Pixel Format
-    _writeData8(0x55); // 16-bit/pixel (RGB565)
+    writeCommand(0x3A);   // Interface Pixel Format
+    writeData(0x55); // 16-bit/pixel (RGB565)
 
     // Power Control
-    _writeCmd(0xC0);
-    _writeData8(0x0D); _writeData8(0x0D);
-    _writeCmd(0xC1);
-    _writeData8(0x43); _writeData8(0x00);
-    _writeCmd(0xC2);
-    _writeData8(0x00);
+    writeCommand(0xC0);
+    writeData(0x0D); writeData(0x0D);
+    writeCommand(0xC1);
+    writeData(0x43); writeData(0x00);
+    writeCommand(0xC2);
+    writeData(0x00);
 
     // VCOM Control — affects colour balance and contrast
-    _writeCmd(0xC5);
-    _writeData8(0x00); _writeData8(0x48);
-    _writeData8(0x00); _writeData8(0x48);
+    writeCommand(0xC5);
+    writeData(0x00); writeData(0x48);
+    writeData(0x00); writeData(0x48);
 
     // Display Function Control
-    _writeCmd(0xB6);
-    _writeData8(0x00);
-    _writeData8(0x22); // SS=1, GS=0, REV=1
-    _writeData8(0x3B); // NL = 480 lines
+    writeCommand(0xB6);
+    writeData(0x00);
+    writeData(0x22); // SS=1, GS=0, REV=1
+    writeData(0x3B); // NL = 480 lines
 
     // Positive Gamma Correction
-    _writeCmd(0xE0);
-    _writeData8(0x0F); _writeData8(0x21); _writeData8(0x1C); _writeData8(0x0B);
-    _writeData8(0x0E); _writeData8(0x08); _writeData8(0x49); _writeData8(0x98);
-    _writeData8(0x38); _writeData8(0x09); _writeData8(0x11); _writeData8(0x03);
-    _writeData8(0x14); _writeData8(0x10); _writeData8(0x00);
+    writeCommand(0xE0);
+    writeData(0x0F); writeData(0x21); writeData(0x1C); writeData(0x0B);
+    writeData(0x0E); writeData(0x08); writeData(0x49); writeData(0x98);
+    writeData(0x38); writeData(0x09); writeData(0x11); writeData(0x03);
+    writeData(0x14); writeData(0x10); writeData(0x00);
 
     // Negative Gamma Correction
-    _writeCmd(0xE1);
-    _writeData8(0x0F); _writeData8(0x2F); _writeData8(0x2B); _writeData8(0x0C);
-    _writeData8(0x0E); _writeData8(0x06); _writeData8(0x47); _writeData8(0x76);
-    _writeData8(0x37); _writeData8(0x07); _writeData8(0x11); _writeData8(0x04);
-    _writeData8(0x23); _writeData8(0x1E); _writeData8(0x00);
+    writeCommand(0xE1);
+    writeData(0x0F); writeData(0x2F); writeData(0x2B); writeData(0x0C);
+    writeData(0x0E); writeData(0x06); writeData(0x47); writeData(0x76);
+    writeData(0x37); writeData(0x07); writeData(0x11); writeData(0x04);
+    writeData(0x23); writeData(0x1E); writeData(0x00);
 
-    _writeCmd(0x13);   // Normal Display Mode ON
-    _writeCmd(0x29);   // Display ON
+    writeCommand(0x13);   // Normal Display Mode ON
+    writeCommand(0x29);   // Display ON
     delay(25);
 
     setRotation(0);    // Sets MADCTL (0x36) + Display Function Control (0xB6)
@@ -76,10 +86,10 @@ void DIYables_TFT_RM68140_Shield::invertDisplay(bool i) {
 
 // Turn the display back on after turnOff(). The previous content is restored.
 void DIYables_TFT_RM68140_Shield::turnOn() {
-  _writeCmd(0x00); // NOP - ensure not in data mode
-  _writeCmd(0x11); // Sleep Out
+  writeCommand(0x00); // NOP - ensure not in data mode
+  writeCommand(0x11); // Sleep Out
   delay(120);      // Wait for sleep out to complete
-  _writeCmd(0x29); // Display ON
+  writeCommand(0x29); // Display ON
   delay(20);
 }
 
@@ -88,48 +98,11 @@ void DIYables_TFT_RM68140_Shield::turnOn() {
 // cannot be controlled by software. The frame buffer content is preserved, so
 // calling turnOn() will restore the previous display content without redrawing.
 void DIYables_TFT_RM68140_Shield::turnOff() {
-  _writeCmd(0x00); // NOP - ensure not in data mode
-  _writeCmd(0x28); // Display OFF
+  writeCommand(0x00); // NOP - ensure not in data mode
+  writeCommand(0x28); // Display OFF
   delay(20);
-  _writeCmd(0x10); // Sleep In (low power mode)
+  writeCommand(0x10); // Sleep In (low power mode)
   delay(120);      // Wait for sleep in to complete
-}
-
-
-// --- Low-level write helpers (parent's writeCommand/writeData are private) ---
-
-inline void DIYables_TFT_RM68140_Shield::_writeCmd(uint8_t cmd) {
-  #ifndef ARDUINO_API_USED
-  PIN_LOW(CD_PORT, CD_PIN);
-  #else
-  PIN_LOW(API_PIN_CD);
-  #endif
-  WRITE_8(cmd);
-  #ifndef ARDUINO_API_USED
-  PIN_LOW(WR_PORT, WR_PIN);
-  asm volatile("nop");
-  PIN_HIGH(WR_PORT, WR_PIN);
-  #else
-  PIN_LOW(API_PIN_WR);
-  PIN_HIGH(API_PIN_WR);
-  #endif
-}
-
-inline void DIYables_TFT_RM68140_Shield::_writeData8(uint8_t data) {
-  #ifndef ARDUINO_API_USED
-  PIN_HIGH(CD_PORT, CD_PIN);
-  #else
-  PIN_HIGH(API_PIN_CD);
-  #endif
-  WRITE_8(data);
-  #ifndef ARDUINO_API_USED
-  PIN_LOW(WR_PORT, WR_PIN);
-  asm volatile("nop");
-  PIN_HIGH(WR_PORT, WR_PIN);
-  #else
-  PIN_LOW(API_PIN_WR);
-  PIN_HIGH(API_PIN_WR);
-  #endif
 }
 
 // --- Rotation fix for RM68140-based display ---
@@ -155,172 +128,15 @@ void DIYables_TFT_RM68140_Shield::setRotation(uint8_t r) {
   val &= 0x28;  // Keep only MV and BGR in MADCTL
 
   // Display Function Control (0xB6): set scan direction
-  _writeCmd(0xB6);
-  _writeData8(0x00);
-  _writeData8(GS | SS | 0x02);  // GS, SS, REV=1
-  _writeData8(0x3B);            // NL = 480 lines
+  writeCommand(0xB6);
+  writeData(0x00);
+  writeData(GS | SS | 0x02);  // GS, SS, REV=1
+  writeData(0x3B);            // NL = 480 lines
 
   // MADCTL (0x36): only MV and BGR (no MX/MY)
-  _writeCmd(0x36);
-  _writeData8(val);
+  writeCommand(0x36);
+  writeData(val);
 }
-
-
-// --- Hardware-accelerated drawing ---
-// The parent class has setAddrWindow/writeData16 as private, so we replicate
-// them here to enable bulk-pixel fills for rectangles and lines.
-
-inline void DIYables_TFT_RM68140_Shield::_pulseWR() {
-  #ifndef ARDUINO_API_USED
-  PIN_LOW(WR_PORT, WR_PIN);
-  asm volatile("nop");
-  PIN_HIGH(WR_PORT, WR_PIN);
-  #else
-  PIN_LOW(API_PIN_WR);
-  PIN_HIGH(API_PIN_WR);
-  #endif
-}
-
-inline void DIYables_TFT_RM68140_Shield::_setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
-  _writeCmd(0x2A);
-  _writeData8(x0 >> 8); _writeData8(x0 & 0xFF);
-  _writeData8(x1 >> 8); _writeData8(x1 & 0xFF);
-
-  _writeCmd(0x2B);
-  _writeData8(y0 >> 8); _writeData8(y0 & 0xFF);
-  _writeData8(y1 >> 8); _writeData8(y1 & 0xFF);
-
-  _writeCmd(0x2C);
-}
-
-void DIYables_TFT_RM68140_Shield::_writeData16(uint16_t data, uint32_t count) {
-  uint8_t hi = data >> 8;
-  uint8_t lo = data & 0xFF;
-
-  #ifndef ARDUINO_API_USED
-  PIN_HIGH(CD_PORT, CD_PIN);
-  #else
-  PIN_HIGH(API_PIN_CD);
-  #endif
-
-  while (count >= 8) {
-    WRITE_8(hi); _pulseWR(); WRITE_8(lo); _pulseWR();
-    WRITE_8(hi); _pulseWR(); WRITE_8(lo); _pulseWR();
-    WRITE_8(hi); _pulseWR(); WRITE_8(lo); _pulseWR();
-    WRITE_8(hi); _pulseWR(); WRITE_8(lo); _pulseWR();
-    WRITE_8(hi); _pulseWR(); WRITE_8(lo); _pulseWR();
-    WRITE_8(hi); _pulseWR(); WRITE_8(lo); _pulseWR();
-    WRITE_8(hi); _pulseWR(); WRITE_8(lo); _pulseWR();
-    WRITE_8(hi); _pulseWR(); WRITE_8(lo); _pulseWR();
-    count -= 8;
-  }
-  while (count--) {
-    WRITE_8(hi); _pulseWR();
-    WRITE_8(lo); _pulseWR();
-  }
-}
-
-void DIYables_TFT_RM68140_Shield::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
-  // Bounds clipping
-  if (x >= width() || y >= height() || w <= 0 || h <= 0) return;
-  if (x < 0) { w += x; x = 0; }
-  if (y < 0) { h += y; y = 0; }
-  if ((x + w) > width())  w = width()  - x;
-  if ((y + h) > height()) h = height() - y;
-
-  _setAddrWindow(x, y, x + w - 1, y + h - 1);
-  _writeData16(color, (uint32_t)w * h);
-}
-
-void DIYables_TFT_RM68140_Shield::drawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) {
-  fillRect(x, y, w, 1, color);
-}
-
-void DIYables_TFT_RM68140_Shield::drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color) {
-  fillRect(x, y, 1, h, color);
-}
-
-void DIYables_TFT_RM68140_Shield::fillScreen(uint16_t color) {
-  _setAddrWindow(0, 0, width() - 1, height() - 1);
-  _writeData16(color, (uint32_t)width() * height());
-}
-
-// Public address window for advanced users (e.g., streaming pixels from SD card)
-void DIYables_TFT_RM68140_Shield::setAddrWindow(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
-  _setAddrWindow(x0, y0, x1, y1);
-}
-
-// Stream an array of 16-bit pixel colors (from RAM) to the display.
-// Call setAddrWindow() first to define the target region.
-void DIYables_TFT_RM68140_Shield::pushColors(uint16_t *data, uint32_t len) {
-  #ifndef ARDUINO_API_USED
-  PIN_HIGH(CD_PORT, CD_PIN);
-  #else
-  PIN_HIGH(API_PIN_CD);
-  #endif
-
-  while (len--) {
-    uint16_t color = *data++;
-    WRITE_8(color >> 8); _pulseWR();
-    WRITE_8(color & 0xFF); _pulseWR();
-  }
-}
-
-// Hardware-accelerated PROGMEM bitmap drawing.
-// Sets the address window once and streams all pixels.
-void DIYables_TFT_RM68140_Shield::drawRGBBitmap(int16_t x, int16_t y,
-  const uint16_t bitmap[], int16_t w, int16_t h) {
-  if (x >= width() || y >= height() || (x + w) <= 0 || (y + h) <= 0) return;
-
-  // Fully on screen: fast path
-  if (x >= 0 && y >= 0 && (x + w) <= width() && (y + h) <= height()) {
-    _setAddrWindow(x, y, x + w - 1, y + h - 1);
-
-    #ifndef ARDUINO_API_USED
-    PIN_HIGH(CD_PORT, CD_PIN);
-    #else
-    PIN_HIGH(API_PIN_CD);
-    #endif
-
-    uint32_t count = (uint32_t)w * h;
-    for (uint32_t i = 0; i < count; i++) {
-      uint16_t color = pgm_read_word(&bitmap[i]);
-      WRITE_8(color >> 8); _pulseWR();
-      WRITE_8(color & 0xFF); _pulseWR();
-    }
-  } else {
-    // Partially off screen: clip per pixel
-    for (int16_t j = 0; j < h; j++) {
-      for (int16_t i = 0; i < w; i++) {
-        int16_t px = x + i, py = y + j;
-        if (px >= 0 && px < width() && py >= 0 && py < height()) {
-          drawPixel(px, py, pgm_read_word(&bitmap[j * w + i]));
-        }
-      }
-    }
-  }
-}
-
-// Hardware-accelerated RAM bitmap drawing.
-void DIYables_TFT_RM68140_Shield::drawRGBBitmap(int16_t x, int16_t y,
-  uint16_t *bitmap, int16_t w, int16_t h) {
-  if (x >= width() || y >= height() || (x + w) <= 0 || (y + h) <= 0) return;
-
-  if (x >= 0 && y >= 0 && (x + w) <= width() && (y + h) <= height()) {
-    _setAddrWindow(x, y, x + w - 1, y + h - 1);
-    pushColors(bitmap, (uint32_t)w * h);
-  } else {
-    for (int16_t j = 0; j < h; j++) {
-      for (int16_t i = 0; i < w; i++) {
-        int16_t px = x + i, py = y + j;
-        if (px >= 0 && px < width() && py >= 0 && py < height()) {
-          drawPixel(px, py, bitmap[j * w + i]);
-        }
-      }
-    }
-  }
-}
-
 
 // --- Touch functions for DIYables_TFT_RM68140_Shield (RM68140 driver) ---
 // Uses the Adafruit TouchScreen library (same approach as MCUFRIEND_kbv Touch_shield_new)
@@ -336,26 +152,30 @@ void DIYables_TFT_RM68140_Shield::readTouchRaw(int &x, int &y, int &z) {
     TSPoint tp = _ts.getPoint();
 
     // Restore shared pins for TFT operation.
-    // TouchScreen.getPoint() leaves TS_YP and TS_XM in INPUT (analog) mode,
+    // TouchScreen.getPoint() leaves YP and XM in INPUT (analog) mode,
     // but these pins are shared with the TFT data/control bus.
-    pinMode(TS_YP, OUTPUT);
-    pinMode(TS_XM, OUTPUT);
+    pinMode(_ts_yp, OUTPUT);
+    pinMode(_ts_xm, OUTPUT);
 
     // Restore all TFT data bus and control pin directions
-    SET_DATA_DIR_OUT();
-    SET_CONTROL_DIR_OUT();
-
     #ifndef ARDUINO_API_USED
-    PIN_HIGH(RD_PORT, RD_PIN);
-    #else
-    PIN_HIGH(API_PIN_RD);
+    if (!_useAPI) {
+        SET_DATA_DIR_OUT();
+        SET_CONTROL_DIR_OUT();
+        PIN_HIGH(RD_PORT, RD_PIN);
+        PIN_LOW(CS_PORT, CS_PIN);
+    } else
     #endif
-
-    #ifndef ARDUINO_API_USED
-    PIN_LOW(CS_PORT, CS_PIN);
-    #else
-    PIN_LOW(API_PIN_CS);
-    #endif
+    {
+        for (uint8_t i = 0; i < 8; i++) { pinMode(_d[i], OUTPUT); }
+        pinMode(_rd, OUTPUT);
+        pinMode(_wr, OUTPUT);
+        pinMode(_cd, OUTPUT);
+        pinMode(_cs, OUTPUT);
+        pinMode(_rst, OUTPUT);
+        digitalWrite(_rd, HIGH);
+        digitalWrite(_cs, LOW);
+    }
 
     x = tp.x;
     y = tp.y;
@@ -372,23 +192,23 @@ bool DIYables_TFT_RM68140_Shield::getTouch(int &screenX, int &screenY) {
         // Map to the current pixel orientation using the same approach as MCUFRIEND_kbv.
         switch (getRotation()) {
             case 0:
-                screenX = map(raw_x, touch_min_x, touch_max_x, 0, width() - 1);
+                screenX = map(raw_x, touch_max_x, touch_min_x, 0, width() - 1);
                 screenY = map(raw_y, touch_min_y, touch_max_y, 0, height() - 1);
                 break;
             case 1:
                 screenX = map(raw_y, touch_min_y, touch_max_y, 0, width() - 1);
-                screenY = map(raw_x, touch_max_x, touch_min_x, 0, height() - 1);
+                screenY = map(raw_x, touch_min_x, touch_max_x, 0, height() - 1);
                 break;
             case 2:
-                screenX = map(raw_x, touch_max_x, touch_min_x, 0, width() - 1);
+                screenX = map(raw_x, touch_min_x, touch_max_x, 0, width() - 1);
                 screenY = map(raw_y, touch_max_y, touch_min_y, 0, height() - 1);
                 break;
             case 3:
                 screenX = map(raw_y, touch_max_y, touch_min_y, 0, width() - 1);
-                screenY = map(raw_x, touch_min_x, touch_max_x, 0, height() - 1);
+                screenY = map(raw_x, touch_max_x, touch_min_x, 0, height() - 1);
                 break;
             default:
-                screenX = map(raw_x, touch_min_x, touch_max_x, 0, width() - 1);
+                screenX = map(raw_x, touch_max_x, touch_min_x, 0, width() - 1);
                 screenY = map(raw_y, touch_min_y, touch_max_y, 0, height() - 1);
                 break;
         }

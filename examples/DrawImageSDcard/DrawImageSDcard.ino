@@ -6,6 +6,10 @@
    Product page:
    - https://diyables.io/products/3.5-tft-lcd-color-touch-screen-shield-for-arduino-uno-mega-320x480-resolution-ili9488-driver-parallel-8-bit-interface-28pin-module-with-touch
    - https://www.amazon.com/dp/B0DQ3NQ3LW
+
+   NOTE: This example works well with Uno form factor boards. However, on Mega
+   form factor boards, the MicroSD card slot on this shield is not connected to
+   the SPI pins. You need to manually map the pins using wires.
 */
 
 #include <DIYables_TFT_Touch_Shield.h>
