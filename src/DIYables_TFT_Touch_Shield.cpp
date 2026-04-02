@@ -6,6 +6,12 @@ DIYables_TFT_RM68140_Shield::DIYables_TFT_RM68140_Shield()
     _ts_xp(TS_XP), _ts_yp(TS_YP), _ts_xm(TS_XM), _ts_ym(TS_YM) {}
 
 DIYables_TFT_RM68140_Shield::DIYables_TFT_RM68140_Shield(
+  uint8_t ts_xp, uint8_t ts_yp, uint8_t ts_xm, uint8_t ts_ym)
+  : DIYables_TFT_ILI9486_Shield(),
+    _ts(ts_xp, ts_yp, ts_xm, ts_ym, 300),
+    _ts_xp(ts_xp), _ts_yp(ts_yp), _ts_xm(ts_xm), _ts_ym(ts_ym) {}
+
+DIYables_TFT_RM68140_Shield::DIYables_TFT_RM68140_Shield(
   uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
   uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7,
   uint8_t rd, uint8_t wr, uint8_t cd, uint8_t cs, uint8_t rst,
@@ -139,7 +145,7 @@ void DIYables_TFT_RM68140_Shield::setRotation(uint8_t r) {
 }
 
 // --- Touch functions for DIYables_TFT_RM68140_Shield (RM68140 driver) ---
-// Uses the Adafruit TouchScreen library (same approach as MCUFRIEND_kbv Touch_shield_new)
+// Uses the built-in DIYables_TouchScreen driver (same approach as MCUFRIEND_kbv Touch_shield_new)
 
 void DIYables_TFT_RM68140_Shield::setTouchCalibration(int min_x, int max_x, int min_y, int max_y) {
     touch_min_x = min_x;
@@ -148,11 +154,15 @@ void DIYables_TFT_RM68140_Shield::setTouchCalibration(int min_x, int max_x, int 
     touch_max_y = max_y;
 }
 
+void DIYables_TFT_RM68140_Shield::setADCResolution(uint8_t bits) {
+    _ts.setADCResolution(bits);
+}
+
 void DIYables_TFT_RM68140_Shield::readTouchRaw(int &x, int &y, int &z) {
     TSPoint tp = _ts.getPoint();
 
     // Restore shared pins for TFT operation.
-    // TouchScreen.getPoint() leaves YP and XM in INPUT (analog) mode,
+    // DIYables_TouchScreen::getPoint() leaves YP and XM in INPUT (analog) mode,
     // but these pins are shared with the TFT data/control bus.
     pinMode(_ts_yp, OUTPUT);
     pinMode(_ts_xm, OUTPUT);
@@ -186,7 +196,7 @@ bool DIYables_TFT_RM68140_Shield::getTouch(int &screenX, int &screenY) {
     int raw_x, raw_y, z;
     readTouchRaw(raw_x, raw_y, z);
 
-    if (z > 200 && z < 1000) {
+    if (z > 10) {
         // Calibration values are for PORTRAIT orientation (rotation 0).
         // tp.y is always the long dimension of the touch panel.
         // Map to the current pixel orientation using the same approach as MCUFRIEND_kbv.

@@ -13,7 +13,10 @@
 
 #define WHITE     DIYables_TFT::colorRGB(255, 255, 255)
 
+// For Arduino Uno R3, Uno R4, Mega, Due, Giga, DIYables STEM V3/V4 (default touch pins: XP=6, YP=A1, XM=A2, YM=7)
 DIYables_TFT_RM68140_Shield TFT_display;
+// For DIYables ESP32-S3 Uno-form factor (https://diyables.io/esp32-s3-uno), touch pins: XP=3, YP=1, XM=7, YM=14
+// DIYables_TFT_RM68140_Shield TFT_display(3, 1, 7, 14);
 
 int img_width = 120;
 int img_height = 53;
