@@ -88,7 +88,7 @@ Supported and Tested Hardware
 | Arduino Mega            |   ✅   | Direct register access    | Very fast |
 | [DIYables MEGA2560 R3 *(works like Arduino Mega 2560 Rev3)*](https://diyables.io/atmega2560-board) |   ✅   | Direct register access    | Very fast |
 | Arduino Due             |   ✅   | Direct register access    | Very fast |
-| Arduino Giga            |   —   | Direct register access    | Very fast |
+| Arduino Giga            |   ✅   | Direct register access    | Very fast |
 | [DIYables ESP32 S3, Uno-form factor](https://diyables.io/products/esp32-s3-development-board-with-esp32-s3-wroom-1-n16r8-wifi-bluetooth-uno-compatible-form-factor-works-with-arduino-ide) |   ✅   | Direct register access    | Very fast |
 | Other boards            |   —    | Arduino API (digitalWrite)| Slower    |
 
